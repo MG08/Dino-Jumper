@@ -1,4 +1,6 @@
 import pygame
+import random
+
 
 print("Hello world")
 pygame.init()
@@ -12,11 +14,19 @@ p1y = 450
 yVel = 0
 touchGround = False
 
+CactusHeights= [20,20,20,20,20]
 
+CactusXpos=[]
+   
+for x in range(1 ,5):
+       CactusXpos.append(random.randrange(200, 3000))
+
+CactusImg = pygame.image.load('cactus.png')
+CactusImg.set_colorkey((255, 255, 255))
 #game loop####################################
 while not doExit:
     
-    clock.tick(60)
+    clock.tick(100000000000000000)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             doExit = True;
@@ -38,17 +48,24 @@ while not doExit:
     if keys[pygame.K_w] and touchGround == True:
         yVel=-20
    
-   Cactusheights= [80,40,20,80,30]
    
-   CactusxXpos=[]
-   
-   for x in range(1,5):
-       CactusXpos.append(random.randrange(200, 300))
     #timer section//////////////
    
             
-    clock.tick(60)
+    clock.tick(100)
     
+    CactusXpos = [x - 5 for x in CactusXpos]
+    
+    for x in range(len(CactusXpos)):
+        if CactusXpos[x]<0:
+            CactusXpos[x]=random.randrange(640,5000)
+            print("reset to", CactusXpos[x])
+            
+    for x, y in zip(CactusXpos, CactusHeights):
+        a = pygame.Rect((x,480-y), (30,80))
+        b = pygame.Rect((p1x, p1y), (30, 30))
+        if a.colliderect(b) == True:
+            print("COLLISION")
     #input section////////////////////
     
     #render section//////////////////
@@ -56,7 +73,8 @@ while not doExit:
     
     pygame.draw.rect(screen, (255, 255, 255), (p1x, p1y, 20, 100), 1)
     
-   
+    for x, y in zip(CactusXpos, CactusHeights):
+       screen.blit(CactusImg, (x-15,480-y))
     
     pygame.display.flip()
 #end game loop############################
